@@ -1,4 +1,6 @@
 setup: .env
+	$(MAKE) up
+	docker-compose run --rm profile-gui chmod 777 /tmp
 .PHONY: setup
 
 .env:

@@ -10,3 +10,14 @@ services:
     volumes:
       - "./app/src:/app"
       - "./app/conf.d/php.ini:/usr/local/etc/php/php.ini"
+      - profile:/tmp/xdebug
+
+  profile-gui:
+    image: jokkedk/webgrind
+    volumes:
+      - profile:/tmp
+    ports:
+      - "${PROFILE_PORT}:80"
+
+volumes:
+  profile:
