@@ -9,3 +9,4 @@ services:
     build: ./app
     volumes:
       - "./app/src:/app"
+      - "./app/conf.d/php.ini:/usr/local/etc/php/php.ini"
