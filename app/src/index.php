@@ -1,3 +1,8 @@
 <?php
 
-phpinfo();
+function helloWorld()
+{
+    echo 'Hello World!';
+}
+
+helloWorld();
