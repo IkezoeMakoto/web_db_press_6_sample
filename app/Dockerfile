@@ -7,3 +7,6 @@ RUN apk add --update --no-cache make git libzip-dev autoconf gcc g++ \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && docker-php-ext-install zip pdo_mysql
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer dump-autoload

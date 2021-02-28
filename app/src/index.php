@@ -1,12 +1,17 @@
 <?php
+require_once __DIR__.'/vendor/autoload.php';
 
-class User {
-    private string $id;
-    private string $name;
-    public function __construct(string $name) {
-        $this->id = uniqid('', true);
-        $this->name = $name;
-    }
+use App\Todo\Repository as TodoRepository;
+use App\User\Repository as UserRepository;
+
+$todoRepo = new TodoRepository();
+
+$todos = $todoRepo->getAll(['\App\Todo\Entity', 'restore']);
+
+foreach ($todos as $todo) {
+    $userRepo = new UserRepository();
+    $user = $userRepo->getById($todo->getAssigneeId(), ['\App\User\Entity', 'restore']);
+    $todo->printEntity();
+    $user->printEntity();
+    echo '<hr>';
 }
-$user = new User('山田太郎');
-var_dump($user);
