@@ -67,6 +67,15 @@ class Repository implements RepositoryInterface
         return $entityFactory([]);
     }
 
+    public function getByIds(array $ids, callable $entityFactory)
+    {
+        $results = [];
+        foreach ($ids as $id) {
+            $results[$id] = $this->getById($id, $entityFactory);
+        }
+        return $results;
+    }
+
     /**
      * @inheritDoc
      */
