@@ -2,54 +2,21 @@
 
 namespace App\User;
 
+use App\Contracts\Infrastructures\canDatabaseAccess;
 use App\Contracts\RepositoryInterface;
 use App\Database\Mock;
 
 class Repository implements RepositoryInterface
 {
-    private array $data;
-    private $datastore;
+    private $dbDriver;
 
     /**
      * Repository constructor.
      */
-    public function __construct()
+    public function __construct(canDatabaseAccess $dbDriver = null)
     {
         // 疑似データストア
-        $this->datastore = new Mock();
-        // 疑似永続データ
-        $this->data = [
-            [
-                'id' => '603b33722d5233.84190225',
-                'name' => '山田太郎',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-01-30 19:00:00')
-            ],
-            [
-                'id' => '603b30e88f2051.05855572',
-                'name' => '佐藤花子',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-02-05 12:00:00'),
-            ],
-            [
-                'id' => '603b33722d5233.841902251',
-                'name' => '山田太郎1',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-01-30 19:00:00')
-            ],
-            [
-                'id' => '603b30e88f2051.058555721',
-                'name' => '佐藤花子1',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-02-05 12:00:00'),
-            ],
-            [
-                'id' => '603b33722d5233.841902252',
-                'name' => '山田太郎2',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-01-30 19:00:00')
-            ],
-            [
-                'id' => '603b30e88f2051.058555722',
-                'name' => '佐藤花子2',
-                'createdAt' => \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', '2021-02-05 12:00:00'),
-            ],
-        ];
+        $this->dbDriver = $dbDriver ?? new Mock();
     }
 
     /**
@@ -57,10 +24,8 @@ class Repository implements RepositoryInterface
      */
     public function getById(string $id, callable $entityFactory)
     {
-        foreach ($this->data as $data) {
+        foreach ($this->dbDriver->select('users') as $data) {
             if ($data['id'] === $id) {
-                // 疑似的なデータ読み込みsleep
-                $this->datastore->IOWait();
                 return $entityFactory($data);
             }
         }
@@ -70,8 +35,11 @@ class Repository implements RepositoryInterface
     public function getByIds(array $ids, callable $entityFactory)
     {
         $results = [];
-        foreach ($ids as $id) {
-            $results[$id] = $this->getById($id, $entityFactory);
+        $users = $this->dbDriver->select('users');
+        foreach ($users as $user) {
+            if (in_array($user['id'], $ids)) {
+                $results[$user['id']] = $entityFactory($user);
+            }
         }
         return $results;
     }
@@ -82,9 +50,7 @@ class Repository implements RepositoryInterface
     public function getAll(callable $entityFactory)
     {
         $result = [];
-        foreach ($this->data as $data) {
-            // 疑似的なデータ読み込みsleep
-            $this->datastore->IOWait();
+        foreach ($this->dbDriver->select('users') as $data) {
             $result[] = $entityFactory($data);
         }
 

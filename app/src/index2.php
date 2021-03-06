@@ -3,8 +3,10 @@ require_once __DIR__.'/vendor/autoload.php';
 
 use App\Todo\Repository as TodoRepository;
 use App\User\Repository as UserRepository;
+use App\Database\Mock as DatabaseDriverMock;
 
-$todoRepo = new TodoRepository();
+$dbDriver = new DatabaseDriverMock();
+$todoRepo = new TodoRepository($dbDriver);
 
 $todos = $todoRepo->getAll(['\App\Todo\Entity', 'restore']);
 $userIds = [];
@@ -15,9 +17,10 @@ foreach ($todos as $todo) {
 // 重複を省く
 $userIds = array_unique($userIds);
 
-$userRepo = new UserRepository();
+$userRepo = new UserRepository($dbDriver);
 // userを一括で取得する
 $users = $userRepo->getByIds($userIds, ['\App\User\Entity', 'restore']);
+
 // 仮想的に件数を100倍にする
 for ($i = 0; $i < 100; $i++) {
     foreach ($todos as $todo) {
