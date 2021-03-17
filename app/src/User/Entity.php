@@ -31,6 +31,14 @@ class Entity {
     }
 
     /**
+     * @param string $id
+     * @return bool
+     */
+    public function isSameId(string $id): bool
+    {
+        return $this->id === $id;
+    }
+    /**
      * entityを出力する
      */
     public function printEntity()
