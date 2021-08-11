@@ -7,7 +7,8 @@
 <h1>『WEB+DB PRESS Vol.121』「PHPのパフォーマンスチューニングをしよう」ソースコード</h1>
 <?php
 $profile_port = getenv('PROFILE_PORT');
-echo "<a href=\"$profile_port\" target=\"_blank\">プロファイリングツール「Webgrind」を見る</a>";
+$hostname = $_SERVER['HTTP_HOST'];
+echo "<a href=\"http://$hostname:$profile_port\" target=\"_blank\">プロファイリングツール「Webgrind」を見る</a>";
 ?>
 <ul>
     <?php
